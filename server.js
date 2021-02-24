@@ -17,13 +17,15 @@ const serviceAccount = require(path.join(__dirname, '/serviceAccountKey.json'));
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://educadorafirebase.firebaseio.com",
-
-
-
 })
 const db = admin.firestore();
+
 process.env.TOKENSTRIPE="sk_test_51HYuyhGqO5WLKI2HSoHyr2X2AGLfdQb2FKsXzXU79dvQmSF57dUjjsixgq6Yq7FMZU6uLGkRhWgDhlpddrY224fx00htN1i5EI"
 process.env.TOKENMERCADOPAGO="TEST-5708698566465206-020216-1cbaade80cc97fab76047cc3d8b3321b-706431956"
+process.env.STRIPE_WEBHOOK_SECRET="whsec_ok7Y09FkWT8kjd7iGlMOBf1EacAsyfD8"
+
+
+
 
 // This is your real test secret API key.
 const stripe = require("stripe")(process.env.TOKENSTRIPE);
