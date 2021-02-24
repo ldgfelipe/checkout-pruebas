@@ -3,7 +3,7 @@ variables.env
 package-lock.json
 serviceAccountKey.json
 # local env files
-.env
+
 .env.local
 .env.*.local
 
