@@ -25,28 +25,18 @@ const db = admin.firestore();
 var configdata={}
 configdata=db.collection('ConfiguracionGeneral').get()
 .then((data)=>{
-  var configdata=data.docs[0].data()
-
-  ejecutaConfigdata(configdata)
+  console.log('carga datos de firebase')
+configdata=data.docs[0].data()
 })
 
-function ejecutaConfigdata(config){
-
-  console.log("config data")
-  console.log(config)
+setTimeout(()=>{
+console.log(configdata)
+},2000)
     // This is your real test secret API key.
     
-    const stripe = require("stripe")(config.pagos.stripe.modoprueba === true ? config.pagos.stripe.secretkeytest : config.pagos.stripe.secretkeyprod);
-    //CREDENCIALES DE CUENTA TEST
-    mercadopago.configure({
-      access_token: config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.secretkeytest : config.pagos.mercadopago.secretkeyprod
-    });
-
-ejecutaserver(stripe,mercadopago)
-}
+ 
 
 
-function ejecutaserver(stripe,mercadopago){
 
   app.use(express.static("."));
   // app.use(express.json());
@@ -145,48 +135,58 @@ function ejecutaserver(stripe,mercadopago){
   let external_reference_Global = "sd";
   
   app.post("/create-checkout-session", async (req, res) => {
-    // const domainURL =YOUR_DOMAIN;
-    console.log(req.body);
-    let { priceId, dominio,external_reference } = req.body;
-    console.log(external_reference)
-    console.log(typeof(external_reference))
-    // external_reference = external_reference.toString();
-    external_reference = external_reference.toString();
-  
-    external_reference_Global = external_reference;
-    console.log("CREATE CEHCKOUT SESION");
-    console.log(req.body);
-  
-  
-    try {
-      const session = await stripe.checkout.sessions.create({
-        mode: "subscription",
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price: priceId,
-            quantity: 1,
-          },
-        ],
-        success_url: `${dominio}/`,
-        cancel_url: `${dominio}/`,
-        client_reference_id: external_reference,
-      });
-  
-      console.log(session)
-  
-      res.send({
-        sessionId: session.id,
-      });
-      // res.json(session );
-    } catch (e) {
-      res.status(400);
-      return res.send({
-        error: {
-          message: e.message,
-        }
-      });
-    }
+
+    var stripe = require("stripe")(configdata.pagos.stripe.modoprueba === true ? configdata.pagos.stripe.secretkeytest : configdata.pagos.stripe.secretkeyprod);
+    //CREDENCIALES DE CUENTA TEST
+    mercadopago.configdataure({
+      access_token: configdata.pagos.mercadopago.modoprueba === true ? configdata.pagos.mercadopago.secretkeytest : configdata.pagos.mercadopago.secretkeyprod
+    });
+
+    setTimeout(()=>{
+          // const domainURL =YOUR_DOMAIN;
+              console.log(req.body);
+              let { priceId, dominio,external_reference } = req.body;
+              console.log(external_reference)
+              console.log(typeof(external_reference))
+              // external_reference = external_reference.toString();
+              external_reference = external_reference.toString();
+            
+              external_reference_Global = external_reference;
+              console.log("CREATE CEHCKOUT SESION");
+              console.log(req.body);
+            
+            
+              try {
+                const session = await stripe.checkout.sessions.create({
+                  mode: "subscription",
+                  payment_method_types: ["card"],
+                  line_items: [
+                    {
+                      price: priceId,
+                      quantity: 1,
+                    },
+                  ],
+                  success_url: `${dominio}/`,
+                  cancel_url: `${dominio}/`,
+                  client_reference_id: external_reference,
+                });
+            
+                console.log(session)
+            
+                res.send({
+                  sessionId: session.id,
+                });
+                // res.json(session );
+              } catch (e) {
+                res.status(400);
+                return res.send({
+                  error: {
+                    message: e.message,
+                  }
+                });
+              }
+    },2000)
+    
   });
   
   //VERIFICAR 
@@ -536,7 +536,6 @@ function ejecutaserver(stripe,mercadopago){
     //return res.status(200); 
   });
   
-}
 
 
 
