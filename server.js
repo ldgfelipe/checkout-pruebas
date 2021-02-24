@@ -17,23 +17,16 @@ const serviceAccount = require(path.join(__dirname, '/serviceAccountKey.json'));
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://educadorafirebase.firebaseio.com",
-
-
-
 })
 const db = admin.firestore();
 
-
-
 // This is your real test secret API key.
 const stripe = require("stripe")(process.env.TOKENSTRIPE);
-
 
 //CREDENCIALES DE CUENTA TEST
 mercadopago.configure({
   access_token: process.env.TOKENMERCADOPAGO
 });
-
 
 app.use(express.static("."));
 // app.use(express.json());
