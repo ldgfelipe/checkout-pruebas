@@ -9,6 +9,7 @@ const admin = require('firebase-admin');
 const path = require("path");
 
 require("dotenv").config({path: ".env"});
+
 console.log(path.join(__dirname, '/serviceAccountKey.json'))
 
 app.use(cors());
@@ -30,23 +31,22 @@ configdata=db.collection('ConfiguracionGeneral').get()
 })
 
 function ejecutaConfigdata(config){
+
   console.log("config data")
   console.log(config)
     // This is your real test secret API key.
     
-    const stripe = require("stripe")(config.pagos.stripe.modoprueba === true ? config.pagos.stripe.apikeytest : config.pagos.stripe.apikeyprod);
+    const stripe = require("stripe")(config.pagos.stripe.modoprueba === true ? config.pagos.stripe.secretkeytest : config.pagos.stripe.secretkeyprod);
     //CREDENCIALES DE CUENTA TEST
     mercadopago.configure({
-      access_token: config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.apikeytest : config.pagos.mercadopago.apikeyprod
+      access_token: config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.secretkeytest : config.pagos.mercadopago.secretkeyprod
     });
 
-    ejecutaserver()
+ejecutaserver(stripe,mercadopago)
 }
 
 
-function ejecutaserver(){
-
-
+function ejecutaserver(stripe,mercadopago){
 
   app.use(express.static("."));
   // app.use(express.json());
@@ -96,12 +96,7 @@ function ejecutaserver(){
       });
   });
   
-  
-  
-  
-  
-  
-  
+
   app.post("/estado-pago", async(req, res) => {
   
     console.log("ESTADO-PAGO");
@@ -541,12 +536,6 @@ function ejecutaserver(){
     //return res.status(200); 
   });
   
-  
-  
-  
-
-
-
 }
 
 
