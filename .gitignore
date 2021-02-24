@@ -1,7 +1,6 @@
 /node_modules
 variables.env
 package-lock.json
-serviceAccountKey.json
 # local env files
 
 .env.local
