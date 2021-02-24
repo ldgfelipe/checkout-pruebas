@@ -33,8 +33,6 @@ configdata=db.collection('ConfiguracionGeneral').get()
 
 function ejecutaConfigdata(config){
 
-  console.log("config data")
-  console.log(config)
     // This is your real test secret API key.
     var clavestripesecreta=config.pagos.stripe.modoprueba === true ? config.pagos.stripe.secretkeytest : config.pagos.stripe.secretkeyprod
 
@@ -46,15 +44,15 @@ function ejecutaConfigdata(config){
       access_token: claveMercadoPagoSecreta
     });
 
-    console.log('clave stripe secreta:'+clavestripesecreta)
-    console.log('clave mercadopago secreta '+claveMercadoPagoSecreta)
-
-
-ejecutaserver(stripe,mercadopago)
+ejecutaserver(stripe,mercadopago,config)
 }
 
 
-function ejecutaserver(stripe,mercadopago){
+function ejecutaserver(stripe,mercadopago,config){
+  var urlApiMP=config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.apiUrltest : config.pagos.mercadopago.apiUrlprod
+
+  var urlApiStripe=config.pagos.stripe.modoprueba === true ? config.pagos.stripe.apiUrltest : config.pagos.stripe.apiUrlprod
+
 
   app.use(express.static("."));
   // app.use(express.json());
@@ -89,7 +87,7 @@ function ejecutaserver(stripe,mercadopago){
       },
       // notification_url: "https://educadora.cf/ipn",
       // notification_url: "https://nvbz6.sse.codesandbox.io/about",
-      notification_url: "https://stripe-checkout-api.herokuapp.com/mp-webhook?source_news=webhooks",
+      notification_url: urlApiMP+"/mp-webhook?source_news=webhooks",
       // auto_return: 'approved',
       external_reference,
     };
@@ -297,7 +295,7 @@ function ejecutaserver(stripe,mercadopago){
         event = stripe.webhooks.constructEvent(
           req.rawBody,
           signature,
-          process.env.STRIPE_WEBHOOK_SECRET
+          config.pagos.stripe.webhooksecret
         );
         // console.log(event);
   
