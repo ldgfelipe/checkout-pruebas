@@ -29,14 +29,14 @@ configdata=db.collection('ConfiguracionGeneral').get()
 configdata=data.docs[0].data()
 })
 
-setTimeout(()=>{
-console.log(configdata)
-},2000)
-    // This is your real test secret API key.
-    
- 
 
+    // This is your real test secret API key.
     res.sendStatus(200);
+    app.listen(port, '0.0.0.0', () => {
+      console.log('NODE SERVER RUN!');
+    });
+
+
   
 
   
