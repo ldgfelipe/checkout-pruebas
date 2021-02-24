@@ -16,10 +16,12 @@ console.log(path.join(__dirname, '/serviceAccountKey.json'))
 app.use(cors());
 
 const serviceAccount = require(path.join(__dirname, '/serviceAccountKey.json'));
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://educadorafirebase.firebaseio.com",
 })
+
 const db = admin.firestore();
 
 ///// carga claves de sesion para mercadopago y stripe
@@ -49,6 +51,7 @@ ejecutaserver(stripe,mercadopago,config)
 
 
 function ejecutaserver(stripe,mercadopago,config){
+
   var urlApiMP=config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.apiUrltest : config.pagos.mercadopago.apiUrlprod
 
   var urlApiStripe=config.pagos.stripe.modoprueba === true ? config.pagos.stripe.apiUrltest : config.pagos.stripe.apiUrlprod
@@ -282,8 +285,11 @@ function ejecutaserver(stripe,mercadopago,config){
   
   app.post("/stripe-webhook", bodyParser.raw({type: 'application/json'}), async (req, res) => {
     let eventType;
+
+    var webhooksecretkey=config.pagos.stripe.modoprueba === true ? config.pagos.stripe.webhooksecret_test : config.pagos.stripe.webhooksecret_prod
     // Check if webhook signing is configured.
     console.log("CHECK WEBHOOK STRIPE")
+    console.log(webhooksecretkey)
     // console.log("CHECK WEBHOOK STRIPE")
     // console.log("CHECK WEBHOOK STRIPE")
     // console.log("CHECK WEBHOOK STRIPE")
@@ -292,10 +298,13 @@ function ejecutaserver(stripe,mercadopago,config){
       let signature = req.headers["stripe-signature"];
   
       try {
+
+        
+
         event = stripe.webhooks.constructEvent(
           req.rawBody,
           signature,
-          config.pagos.stripe.webhooksecret
+          webhooksecretkey
         );
         // console.log(event);
   
