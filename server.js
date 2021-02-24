@@ -8,7 +8,8 @@ const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
 const path = require("path");
 
-require("dotenv").config({path: ".env"});
+/*require("dotenv").config({path: ".env"});*/
+
 
 console.log(path.join(__dirname, '/serviceAccountKey.json'))
 
@@ -22,7 +23,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 ///// carga claves de sesion para mercadopago y stripe
-var configdata={}
+
 configdata=db.collection('ConfiguracionGeneral').get()
 .then((data)=>{
   var configdata=data.docs[0].data()
@@ -35,12 +36,19 @@ function ejecutaConfigdata(config){
   console.log("config data")
   console.log(config)
     // This is your real test secret API key.
-    
-    const stripe = require("stripe")(config.pagos.stripe.modoprueba === true ? config.pagos.stripe.secretkeytest : config.pagos.stripe.secretkeyprod);
+    var clavestripesecreta=config.pagos.stripe.modoprueba === true ? config.pagos.stripe.secretkeytest : config.pagos.stripe.secretkeyprod
+
+    var claveMercadoPagoSecreta=config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.secretkeytest : config.pagos.mercadopago.secretkeyprod
+
+    const stripe = require("stripe")(clavestripesecreta);
     //CREDENCIALES DE CUENTA TEST
     mercadopago.configure({
-      access_token: config.pagos.mercadopago.modoprueba === true ? config.pagos.mercadopago.secretkeytest : config.pagos.mercadopago.secretkeyprod
+      access_token: claveMercadoPagoSecreta
     });
+
+    console.log('clave stripe secreta:'+clavestripesecreta)
+    console.log('clave mercadopago secreta '+claveMercadoPagoSecreta)
+
 
 ejecutaserver(stripe,mercadopago)
 }
